@@ -1,0 +1,100 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Development Standardization Rules for MCP Server Project
+
+## Module Structure and Type Definitions
+- **Rule**: Define modules with a consistent structure using TypeScript types.
+- **Example**: Use the `Module` type from `types.ts` to ensure each module has a `tool` and a `handler`.
+
+  ```typescript
+  // types.ts
+  export type Module = {
+    tool: Tool;
+    handler: (args: unknown) => {
+      content: Content[];
+      isError: boolean;
+    };
+  };
+  ```
+
+## Tool Definition and Handling
+- **Rule**: Define tools with a name and description, and handle requests using a schema.
+- **Example**: In `get-string-length.ts`, the `GetStringLengthModule` is defined with a `tool` and a `handler`.
+
+  ```typescript
+  // get-string-length.ts
+  export const GetStringLengthModule: Module = {
+    tool: {
+      name: "getStringLength",
+      description: "Get the length of a string",
+    },
+    handler: (args: unknown) => {
+      // ... existing code ...
+    },
+  };
+  ```
+
+## Request Handling
+- **Rule**: Use schemas to handle different types of requests in the server.
+- **Example**: In `main.ts`, the server uses `setRequestHandler` to manage different request schemas.
+
+  ```typescript
+  // main.ts
+  server.setRequestHandler(ListToolsRequestSchema, () => ({ tools: TOOLS }));
+  server.setRequestHandler(CallToolRequestSchema, (request: CallToolRequest) => {
+    // ... existing code ...
+  });
+  ```
+
+## Validation
+- **Rule**: Use validators to ensure input data meets expected formats.
+- **Example**: In `get-string-length.ts`, the `$object` and `$string` validators are used to validate input.
+
+  ```typescript
+  // get-string-length.ts
+  const $param = $object(
+    {
+      input: $string,
+    },
+    false
+  );
+  ```
+
+## Development Environment
+- **Rule**: Use `deno.json` to define tasks and manage imports.
+- **Example**: The `dev` task is defined to run the server with file watching enabled.
+
+  ```json
+  // deno.json
+  {
+    "tasks": {
+      "dev": "deno run --watch main.ts"
+    },
+    "imports": {
+      "@showichiro/validators": "jsr:@showichiro/validators@^0.1.0",
+      "@std/assert": "jsr:@std/assert@1"
+    }
+  }
+  ```
+
+## Error Handling
+- **Rule**: Return structured error messages for unknown tools or invalid inputs.
+- **Example**: In `main.ts`, an error message is returned for unknown tools.
+
+  ```typescript
+  // main.ts
+  default: {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Unknown tool: ${name}`,
+        },
+      ],
+      isError: true,
+    };
+  }
+  ```
