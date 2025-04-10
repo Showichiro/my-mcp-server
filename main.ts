@@ -1,15 +1,16 @@
 import { Server } from "npm:@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "npm:@modelcontextprotocol/sdk/server/stdio.js";
 import {
+  CallToolRequest,
   CallToolRequestSchema,
   ListResourcesRequestSchema,
   ListToolsRequestSchema,
-  CallToolRequest,
   Tool,
 } from "npm:@modelcontextprotocol/sdk/types.js";
 import { GetStringLengthModule } from "./get-string-length.ts";
+import { GenerateUUIDsModule } from "./generate-uuids.ts";
 
-const TOOLS: Tool[] = [GetStringLengthModule.tool];
+const TOOLS: Tool[] = [GetStringLengthModule.tool, GenerateUUIDsModule.tool];
 const server = new Server(
   {
     name: "local",
@@ -20,6 +21,7 @@ const server = new Server(
       resources: {},
       tools: {
         getStringLength: TOOLS[0],
+        generateUUIDs: TOOLS[1],
       },
     },
   }
@@ -36,6 +38,9 @@ server.setRequestHandler(CallToolRequestSchema, (request: CallToolRequest) => {
   switch (name) {
     case "getStringLength": {
       return GetStringLengthModule.handler(args);
+    }
+    case "generateUUIDs": {
+      return GenerateUUIDsModule.handler(args);
     }
     default: {
       return {

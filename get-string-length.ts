@@ -5,7 +5,7 @@ const $param = $object(
   {
     input: $string,
   },
-  false
+  false,
 );
 
 export const GetStringLengthModule: Module = {
