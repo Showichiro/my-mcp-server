@@ -14,7 +14,7 @@ const TOOLS: Tool[] = [GetStringLengthModule.tool, GenerateUUIDsModule.tool];
 const server = new Server(
   {
     name: "local",
-    version: "0.1.0",
+    version: "0.2.0",
   },
   {
     capabilities: {
@@ -57,3 +57,70 @@ server.setRequestHandler(CallToolRequestSchema, (request: CallToolRequest) => {
 });
 
 await server.connect(new StdioServerTransport());
+
+import { Client } from "npm:@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "npm:@modelcontextprotocol/sdk/inMemory.js";
+import { expect } from "jsr:@std/expect";
+
+Deno.test("getStringLength", async () => {
+  const client = new Client(
+    {
+      name: "test client",
+      version: "1.0",
+    },
+    {
+      capabilities: {},
+    }
+  );
+  const [clientTransport, serverTransport] =
+    InMemoryTransport.createLinkedPair();
+  await Promise.all([
+    client.connect(clientTransport),
+    server.connect(serverTransport),
+  ]);
+  const result = await client.callTool({
+    name: "getStringLength",
+    arguments: {
+      input: "Hello, world!",
+    },
+  });
+  expect(result).toEqual({
+    content: [{ type: "text", text: "13" }],
+    isError: false,
+  });
+});
+
+Deno.test("generateUUIDs", async () => {
+  const client = new Client(
+    {
+      name: "test client",
+      version: "1.0",
+    },
+    {
+      capabilities: {},
+    }
+  );
+  const [clientTransport, serverTransport] =
+    InMemoryTransport.createLinkedPair();
+  await Promise.all([
+    client.connect(clientTransport),
+    server.connect(serverTransport),
+  ]);
+  const result = await client.callTool({
+    name: "generateUUIDs",
+    arguments: {
+      count: 10,
+    },
+  });
+  expect(result).toEqual({
+    content: [...Array(10).keys()].map(() => {
+      return {
+        type: "text",
+        text: expect.stringMatching(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+        ),
+      };
+    }),
+    isError: false,
+  });
+});

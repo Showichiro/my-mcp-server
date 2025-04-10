@@ -14,11 +14,8 @@ export const GenerateUUIDsModule: Module = {
       false
     );
 
-    const validatedArgs = $param(args);
-
-    // Check if validation was successful
-    if (typeof validatedArgs !== "boolean") {
-      const { count } = validatedArgs as { count: number };
+    if ($param(args)) {
+      const { count } = args;
 
       const uuids = Array.from({ length: count }, () => crypto.randomUUID());
 
