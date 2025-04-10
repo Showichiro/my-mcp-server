@@ -3,11 +3,11 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Development Standardization Rules for MCP Server Project
+# MCPサーバープロジェクトの開発標準化ルール
 
-## Module Structure and Type Definitions
-- **Rule**: Define modules with a consistent structure using TypeScript types.
-- **Example**: Use the `Module` type from `types.ts` to ensure each module has a `tool` and a `handler`.
+## モジュール構造と型定義
+- **ルール**: TypeScriptの型を使用して一貫した構造でモジュールを定義する。
+- **例**: 各モジュールに`tool`と`handler`を持たせるために、`types.ts`の`Module`型を使用する。
 
   ```typescript
   // types.ts
@@ -20,16 +20,16 @@ alwaysApply: true
   };
   ```
 
-## Tool Definition and Handling
-- **Rule**: Define tools with a name and description, and handle requests using a schema.
-- **Example**: In `get-string-length.ts`, the `GetStringLengthModule` is defined with a `tool` and a `handler`.
+## ツールの定義と処理
+- **ルール**: ツールを名前と説明で定義し、スキーマを使用してリクエストを処理する。
+- **例**: `get-string-length.ts`では、`GetStringLengthModule`が`tool`と`handler`で定義されている。
 
   ```typescript
   // get-string-length.ts
   export const GetStringLengthModule: Module = {
     tool: {
       name: "getStringLength",
-      description: "Get the length of a string",
+      description: "文字列の長さを取得する",
     },
     handler: (args: unknown) => {
       // ... existing code ...
@@ -37,9 +37,9 @@ alwaysApply: true
   };
   ```
 
-## Request Handling
-- **Rule**: Use schemas to handle different types of requests in the server.
-- **Example**: In `main.ts`, the server uses `setRequestHandler` to manage different request schemas.
+## リクエスト処理
+- **ルール**: サーバーで異なるタイプのリクエストを処理するためにスキーマを使用する。
+- **例**: `main.ts`では、サーバーが`setRequestHandler`を使用して異なるリクエストスキーマを管理している。
 
   ```typescript
   // main.ts
@@ -49,9 +49,9 @@ alwaysApply: true
   });
   ```
 
-## Validation
-- **Rule**: Use validators to ensure input data meets expected formats.
-- **Example**: In `get-string-length.ts`, the `$object` and `$string` validators are used to validate input.
+## バリデーション
+- **ルール**: 入力データが期待される形式を満たしていることを確認するためにバリデータを使用する。
+- **例**: `get-string-length.ts`では、`$object`と`$string`バリデータが入力を検証するために使用されている。
 
   ```typescript
   // get-string-length.ts
@@ -63,9 +63,9 @@ alwaysApply: true
   );
   ```
 
-## Development Environment
-- **Rule**: Use `deno.json` to define tasks and manage imports.
-- **Example**: The `dev` task is defined to run the server with file watching enabled.
+## 開発環境
+- **ルール**: `deno.json`を使用してタスクを定義し、インポートを管理する。
+- **例**: サーバーをファイル監視付きで実行するための`dev`タスクが定義されている。
 
   ```json
   // deno.json
@@ -80,9 +80,9 @@ alwaysApply: true
   }
   ```
 
-## Error Handling
-- **Rule**: Return structured error messages for unknown tools or invalid inputs.
-- **Example**: In `main.ts`, an error message is returned for unknown tools.
+## エラーハンドリング
+- **ルール**: 不明なツールや無効な入力に対して構造化されたエラーメッセージを返す。
+- **例**: `main.ts`では、不明なツールに対してエラーメッセージが返される。
 
   ```typescript
   // main.ts
@@ -91,7 +91,7 @@ alwaysApply: true
       content: [
         {
           type: "text",
-          text: `Unknown tool: ${name}`,
+          text: `不明なツール: ${name}`,
         },
       ],
       isError: true,
